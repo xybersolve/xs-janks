@@ -7,7 +7,7 @@
 # DESCRIPTION
 #   Jenkins helper script
 #    * start jenkins from war file
-#    * backup and restore Jenkins
+#    * backup and restore Jenkins home
 #
 # SYNTAX & EXAMPLES
 #    See 'SYNTAX' (below)
@@ -71,13 +71,6 @@ declare -r SYNTAX=$(cat <<EOF
       --dist: Copy files from project to local script bin
       --dryrun|--dry-run: Just show expected source and destinations
 
-      Jenkin in Docker:
-      --up: start in docker container
-      --down: bring down docker container
-      --clean: stop dockler container & delete docker iamge
-      --ssh: SSH into container
-      --logs: attach to docker container logs
-
       Backup & Restore jenkins_home:
       --backup: Backup Jenkins home directory
       --restore: Restore Jenkins directory
@@ -91,13 +84,6 @@ declare -r SYNTAX=$(cat <<EOF
         ${PROGNAME} --start --ver=2.114 --dryrun
         ${PROGNAME} --stop
         ${PROGNAME} --stop --dryrun
-
-      Docker:
-        ${PROGNAME} --up
-        ${PROGNAME} --restart
-        ${PROGNAME} --down
-        ${PROGNAME} --clean
-        ${PROGNAME} --logs
 
       Backup & Restore:
         ${PROGNAME} --backup
@@ -129,12 +115,6 @@ declare -i STOP=${FALSE}
 declare -i ARCHIVES=${FALSE}
 declare -i VERSIONS=${FALSE}
 declare -i DISTRIBUTE=${FALSE}
-declare -i DOCKER_UP=${FALSE}
-declare -i DOCKER_RESTART=${FALSE}
-declare -i DOCKER_LOGS=${FALSE}
-declare -i DOCKER_DOWN=${FALSE}
-declare -i DOCKER_CLEAN=${FALSE}
-declare -i DOCKER_SSH=${FALSE}
 
 # flags
 declare -i DRYRUN=${FALSE}
@@ -394,17 +374,17 @@ __get_opts() {
     local arg="${1}"; shift;
     case ${arg} in
       --help)    show_help                ;;
-      --backup)           BACKUP=${TRUE}  ;;
+      --backup)          BACKUP=${TRUE}   ;;
       --restore)         RESTORE=${TRUE}  ;;
-      --start)            START=${TRUE}   ;;
-      --stop)             STOP=${TRUE}    ;;
+      --start)           START=${TRUE}    ;;
+      --stop)            STOP=${TRUE}     ;;
       --open)
         __open; exit 0;
         ;;
       --versions)        VERSIONS=${TRUE} ;;
       --archives)        ARCHIVES=${TRUE} ;;
-      --dry-run|--dryrun) DRYRUN=${TRUE}  ;;
-      --dist)         DISTRIBUTE=${TRUE}  ;;
+      --dry-run|--dryrun)  DRYRUN=${TRUE} ;;
+      --dist)          DISTRIBUTE=${TRUE} ;;
       --ver*)
         [[ ${arg} =~ '=' ]] && JENKINS_VER="${arg#*=}"
         ;;
@@ -419,12 +399,6 @@ __get_opts() {
         ;;
       --local-vers) # debug test
         __get_local_versions
-        ;;
-      --volume)
-        __create_volume
-        ;;
-      --view)
-        __view_volume
         ;;
       *) die "Unknown option: ${arg}" ;;
    esac
