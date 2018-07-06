@@ -55,7 +55,7 @@ declare -ri MIN_ARG_COUNT=1
 declare -r SYNTAX=$(cat <<EOF
 
     Script: ${PROGNAME}
-    Purpose:
+    Purpose: Script to manage Jenkins WAR implementation
     Usage: ${PROGNAME} [-h|--help] [-v|--version]
 
     Options:
