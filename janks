@@ -78,7 +78,7 @@ declare -r SYNTAX=$(cat <<EOF
 
 
     Examples:
-      WAR:
+      Start & Stop:
         ${PROGNAME} --start
         ${PROGNAME} --start --ver=2.114
         ${PROGNAME} --start --ver=2.114 --dryrun
@@ -97,7 +97,7 @@ declare -r SYNTAX=$(cat <<EOF
         ${PROGNAME} --versions
 
       Distribute (move files to script bin):
-        ${PROGNAME} --dist
+        ./dist --copy
 
 EOF
 )
